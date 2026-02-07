@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Planner - Class 11 Commerce + IPMAT</title>
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+--ipmat: #10b981;
+--accountancy: #3b82f6;
+--micro: #8b5cf6;
+--stats: #f59e0b;
+--business: #ef4444;
+--cs: #06b6d4;
+--english: #ec4899;
+--break: #6b7280;
+}
+
+body {
+background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+color: #f1f5f9;
+min-height: 100vh;
+padding: 20px;
+}
+
+.container {
+max-width: 1400px;
+margin: 0 auto;
+}
+
+header {
+text-align: center;
+padding: 30px 0;
+border-bottom: 2px solid #334155;
+margin-bottom: 30px;
+}
+
+h1 {
+font-size: 2.8rem;
+background: linear-gradient(90deg, #60a5fa, #34d399);
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+margin-bottom: 10px;
+}
+
+.subtitle {
+color: #94a3b8;
+font-size: 1.1rem;
+}
+
+.stats-bar {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 15px;
+margin-bottom: 30px;
+}
+
+.stat-card {
+background: #1e293b;
+padding: 20px;
+border-radius: 12px;
+border-left: 5px solid;
+box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card.ipmat { border-color: var(--ipmat); }
+.stat-card.accountancy { border-color: var(--accountancy); }
+.stat-card.micro { border-color: var(--micro); }
+.stat-card.stats { border-color: var(--stats); }
+
+.stat-card h3 {
+font-size: 0.9rem;
+color: #94a3b8;
+margin-bottom: 8px;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.stat-card .value {
+font-size: 2rem;
+font-weight: bold;
+}
+
+.progress-bar {
+height: 8px;
+background: #334155;
+border-radius: 4px;
+margin-top: 10px;
+overflow: hidden;
+}
+
+.progress-fill {
+height: 100%;
+border-radius: 4px;
+transition: width 0.5s ease;
+}
+
+.main-content {
+display: grid;
+grid-template-columns: 1fr 350px;
+gap: 30px;
+}
+
+@media (max-width: 1024px) {
+.main-content {
+grid-template-columns: 1fr;
+}
+}
+
+.timetable-section {
+background: #1e293b;
+border-radius: 16px;
+padding: 25px;
+box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.section-title {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 25px;
+padding-bottom: 15px;
+border-bottom: 2px solid #334155;
+}
+
+.section-title h2 {
+font-size: 1.8rem;
+color: #e2e8f0;
+}
+
+.day-selector {
+display: flex;
+gap: 10px;
+margin-bottom: 20px;
+flex-wrap: wrap;
+}
+
+.day-btn {
+padding: 10px 20px;
+background: #334155;
+border: none;
+border-radius: 8px;
+color: #cbd5e1;
+cursor: pointer;
+font-weight: 500;
+transition: all 0.3s;
+}
+
+.day-btn:hover {
+background: #475569;
+}
+
+.day-btn.active {
+background: #3b82f6;
+color: white;
+transform: translateY(-2px);
+box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.timetable {
+display: grid;
+gap: 12px;
+}
+
+.time-slot {
+background: #0f172a;
+border-radius: 12px;
+padding: 18px;
+display: grid;
+grid-template-columns: 120px 1fr auto;
+align-items: center;
+gap: 20px;
+border-left: 5px solid;
+transition: transform 0.2s;
+}
+
+.time-slot:hover {
+transform: translateX(5px);
+background: #1a243f;
+}
+
+.time {
+font-weight: bold;
+color: #60a5fa;
+font-size: 1.1rem;
+}
+
+.task {
+font-size: 1.1rem;
+}
+
+.subject-tag {
+display: inline-block;
+padding: 4px 12px;
+border-radius: 20px;
+font-size: 0.85rem;
+font-weight: 600;
+margin-right: 8px;
+}
+
+.checkbox {
+width: 24px;
+height: 24px;
+cursor: pointer;
+accent-color: #10b981;
+}
+
+.sidebar {
+display: flex;
+flex-direction: column;
+gap: 25px;
+}
+
+.pending-chapters {
+background: #1e293b;
+border-radius: 16px;
+padding: 25px;
+box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.chapter-list {
+margin-top: 15px;
+}
+
+.chapter-item {
+padding: 12px 15px;
+background: #0f172a;
+margin-bottom: 10px;
+border-radius: 10px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.chapter-item.completed {
+opacity: 0.7;
+text-decoration: line-through;
+}
+
+.quick-actions {
+background: #1e293b;
+border-radius: 16px;
+padding: 25px;
+box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.action-btn {
+width: 100%;
+padding: 15px;
+margin-bottom: 12px;
+background: #334155;
+border: none;
+border-radius: 10px;
+color: white;
+font-weight: 600;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 10px;
+transition: all 0.3s;
+}
+
+.action-btn:hover {
+background: #475569;
+transform: translateY(-2px);
+}
+
+.action-btn.print { background: #3b82f6; }
+.action-btn.reset { background: #ef4444; }
+.action-btn.export { background: #10b981; }
+
+footer {
+text-align: center;
+margin-top: 40px;
+padding-top: 20px;
+border-top: 1px solid #334155;
+color: #94a3b8;
+font-size: 0.9rem;
+}
+
+.completion-count {
+font-size: 0.9rem;
+color: #94a3b8;
+margin-top: 5px;
+}
+
+/* Color classes for subjects */
+.ipmat { border-color: var(--ipmat); }
+.accountancy { border-color: var(--accountancy); }
+.micro { border-color: var(--micro); }
+.stats { border-color: var(--stats); }
+.business { border-color: var(--business); }
+.cs { border-color: var(--cs); }
+.english { border-color: var(--english); }
+.break { border-color: var(--break); }
+
+.tag-ipmat { background: var(--ipmat); color: white; }
+.tag-accountancy { background: var(--accountancy); color: white; }
+.tag-micro { background: var(--micro); color: white; }
+.tag-stats { background: var(--stats); color: white; }
+.tag-business { background: var(--business); color: white; }
+.tag-cs { background: var(--cs); color: white; }
+.tag-english { background: var(--english); color: white; }
+.tag-break { background: var(--break); color: white; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>📚 Study Planner</h1>
+<p class="subtitle">Class 11 CBSE Commerce + IPMAT Aspirant | School: 9AM-4PM | Night Owl Schedule</p>
+</header>
+
+<div class="stats-bar">
+<div class="stat-card ipmat">
+<h3>IPMAT Hours Today</h3>
+<div class="value">3.0 hrs</div>
+<div class="progress-bar">
+<div class="progress-fill" style="width: 100%; background: var(--ipmat);"></div>
+</div>
+</div>
+<div class="stat-card accountancy">
+<h3>Accountancy Progress</h3>
+<div class="value">2/8 Lectures</div>
+<div class="progress-bar">
+<div class="progress-fill" style="width: 25%; background: var(--accountancy);"></div>
+</div>
+</div>
+<div class="stat-card micro">
+<h3>Microeconomics Progress</h3>
+<div class="value">0/10 Lectures</div>
+<div class="progress-bar">
+<div class="progress-fill" style="width: 0%; background: var(--micro);"></div>
+</div>
+</div>
+<div class="stat-card stats">
+<h3>Statistics Progress</h3>
+<div class="value">0/7 Lectures</div>
+<div class="progress-bar">
+<div class="progress-fill" style="width: 0%; background: var(--stats);"></div>
+</div>
+</div>
+</div>
+
+<div class="main-content">
+<div class="timetable-section">
+<div class="section-title">
+<h2>Weekly Timetable</h2>
+<div class="completion-count">Completed: <span id="completedTasks">0</span>/56 tasks</div>
+</div>
+
+<div class="day-selector">
+<button class="day-btn active" onclick="showDay('mon')">Monday 9 Feb</button>
+<button class="day-btn" onclick="showDay('tue')">Tuesday 10 Feb</button>
+<button class="day-btn" onclick="showDay('wed')">Wednesday 11 Feb</button>
+<button class="day-btn" onclick="showDay('thu')">Thursday 12 Feb</button>
+<button class="day-btn" onclick="showDay('fri')">Friday 13 Feb</button>
+<button class="day-btn" onclick="showDay('sat')">Saturday 14 Feb</button>
+<button class="day-btn" onclick="showDay('sun')">Sunday 15 Feb</button>
+</div>
+
+<div class="timetable" id="timetable">
+<!-- Timetable will be loaded here by JavaScript -->
+</div>
+</div>
+
+<div class="sidebar">
+<div class="pending-chapters">
+<h2>📖 Pending Chapters</h2>
+<div class="chapter-list" id="chapterList">
+<!-- Chapters will be loaded here -->
+</div>
+</div>
+
+<div class="quick-actions">
+<h2>⚡ Quick Actions</h2>
+<button class="action-btn print" onclick="printTimetable()">
+🖨️ Print Timetable
+</button>
+<button class="action-btn export" onclick="exportProgress()">
+📊 Export Progress
+</button>
+<button class="action-btn reset" onclick="resetAll()">
+🔄 Reset All
+</button>
+<button class="action-btn" onclick="showNextWeek()">
+📅 Plan Next Week (16-22 Feb)
+</button>
+</div>
+</div>
+</div>
+
+<footer>
+<p>Designed specifically for Class 11 Commerce + IPMAT Aspirant | Data saved in browser localStorage</p>
+<p>Total IPMAT Hours This Week: <strong>21 hours</strong> | Next Revision: Sunday 15 Feb</p>
+</footer>
+</div>
+
+<script>
+// Complete timetable data
+const timetableData = {
+'mon': [
+{ time: "4:00-5:00 PM", task: "IPMAT - Verbal Ability", subject: "ipmat", completed: false },
+{ time: "5:00-6:00 PM", task: "Break / Freshen up", subject: "break", completed: false },
+{ time: "6:00-7:30 PM", task: "Accountancy - Ch 19 (Lectures 1-3)", subject: "accountancy", completed: false },
+{ time: "7:30-8:30 PM", task: "Microeconomics - Ch 9 (Lectures 1-2)", subject: "micro", completed: false },
+{ time: "8:30-9:00 PM", task: "Dinner", subject: "break", completed: false },
+{ time: "9:00-10:00 PM", task: "English NCERT - Chapter 1", subject: "english", completed: false },
+{ time: "10:00-12:00 AM", task: "IPMAT - Quant Sectional + Review", subject: "ipmat", completed: false },
+{ time: "12:00-1:00 AM", task: "Computer Science - Chapter 1 Theory", subject: "cs", completed: false }
+],
+'tue': [
+{ time: "4:00-5:00 PM", task: "IPMAT - Logical Reasoning", subject: "ipmat", completed: false },
+{ time: "5:00-6:00 PM", task: "Break", subject: "break", completed: false },
+{ time: "6:00-7:30 PM", task: "Accountancy - Ch 19 (Lectures 4-6)", subject: "accountancy", completed: false },
+{ time: "7:30-8:30 PM", task: "Statistics - Ch 10 (Lectures 1-2)", subject: "stats", completed: false },
+{ time: "8:30-9:00 PM", task: "Dinner", subject: "break", completed: false },
+{ time: "9:00-10:00 PM", task: "English NCERT - Chapter 2", subject: "english", completed: false },
+{ time: "10:00-12:00 AM", task: "IPMAT - Verbal Mock + Analysis", subject: "ipmat", completed: false },
+{ time: "12:00-1:00 AM", task: "Computer Science - Chapter 2 Theory", subject: "cs", completed: false }
+],
+'wed': [
+{ time: "4:00-5:00 PM", task: "IPMAT - Quant Practice", subject: "ipmat", completed: false },
+{ time: "5:00-6:00 PM", task: "Break", subject: "break", completed: false },
+{ time: "6:00-7:30 PM", task: "Accountancy - Ch 19 (Question Practice)", subject: "accountancy", completed: false },
+{ time: "7:30-8:30 PM", task: "Microeconomics - Ch 9 Finish + Ch 10 (L1)", subject: "micro", completed: false },
+{ time: "8:30-9:00 PM", task: "Dinner", subject: "break", completed: false },
+{ time: "9:00-10:00 PM", task: "Statistics - Ch 10 (Lectures 3-4)", subject: "stats", completed: false },
+{ time: "10:00-12:00 AM", task: "IPMAT - LR Practice + Review", subject: "ipmat", completed: false },
+{ time: "12:00-1:00 AM", task: "Computer Science - Chapter 3 Theory", subject: "cs", completed: false }
+],
+'thu': [
+{ time: "4:00-5:00 PM", task: "IPMAT - Verbal", subject: "ipmat", completed: false },
+{ time: "5:00-6:00 PM", task: "Break", subject: "break", completed: false },
+{ time: "6:00-7:30 PM", task: "Accountancy - Ch 20 (Lectures 1-2 + Qs)", subject: "accountancy", completed: false },
+{ time: "7:30-8:30 PM", task: "Microeconomics - Ch 10 Finish + Ch 11 (L1)", subject: "micro", completed: false },
+{ time: "8:30-9:00 PM", task: "Dinner", subject: "break", completed: false },
+{ time: "9:00-10:00 PM", task: "Statistics - Ch 11 (Lectures 1-2)", subject: "stats", completed: false },
+{ time: "10:00-12:00 AM", task: "IPMAT - Full Mock (90 mins) + Review", subject: "ipmat", completed: false },
+{ time: "12:00-1:00 AM", task: "Computer Science - Chapter 4 Theory", subject: "cs", completed: false }
+],
+'fri': [
+{ time: "4:00-5:00 PM", task: "IPMAT - Weak Area Focus", subject: "ipmat", completed: false },
+{ time: "5:00-6:00 PM", task: "Break", subject: "break", completed: false },
+{ time: "6:00-7:30 PM", task: "Microeconomics - Ch 11 (Lectures 2-3)", subject: "micro", completed: false },
+{ time: "7:30-8:30 PM", task: "Statistics - Ch 11 (Lecture 3 Finish + Revise)", subject: "stats", completed: false },
+{ time: "8:30-9:00 PM", task: "Dinner", subject: "break", completed: false },
+{ time: "9:00-10:00 PM", task: "English NCERT - Chapter 3", subject: "english", completed: false },
+{ time: "10:00-12:00 AM", task: "IPMAT - Quant Intensive", subject: "ipmat", completed: false },
+{ time: "12:00-1:00 AM", task: "Computer Science - Chapter 5 Theory", subject: "cs", completed: false }
+],
+'sat': [
+{ time: "11:00 AM-1:00 PM", task: "Business Studies - Revise 2 chapters", subject: "business", completed: false },
+{ time: "1:00-2:00 PM", task: "Lunch + Break", subject: "break", completed: false },
+{ time: "2:00-4:00 PM", task: "IPMAT - Full Length Mock", subject: "ipmat", completed: false },
+{ time: "4:00-5:00 PM", task: "Mock Review", subject: "ipmat", completed: false },
+{ time: "5:00-6:30 PM", task: "Accountancy - Ch 20 Qs Practice", subject: "accountancy", completed: false },
+{ time: "6:30-8:00 PM", task: "Microeconomics - Ch 11 Finish", subject: "micro", completed: false },
+{ time: "8:00-9:00 PM", task: "Dinner + Break", subject: "break", completed: false },
+{ time: "9:00-11:00 PM", task: "Statistics - Revise Ch 10, 11", subject: "stats", completed: false },
+{ time: "11:00 PM-12:30 AM", task: "Computer Science - Chapter 6", subject: "cs", completed: false }
+],
+'sun': [
+{ time: "11:00 AM-1:00 PM", task: "Business Studies - Last chapter revision", subject: "business", completed: false },
+{ time: "1:00-2:00 PM", task: "Lunch", subject: "break", completed: false },
+{ time: "2:00-4:00 PM", task: "IPMAT - Weak Topic Revision", subject: "ipmat", completed: false },
+{ time: "4:00-6:00 PM", task: "Computer Science - Chapter 7 + 8", subject: "cs", completed: false },
+{ time: "6:00-8:00 PM", task: "Wrap-up Pending from week", subject: "break", completed: false },
+{ time: "8:00 PM onward", task: "Plan next week + Relax", subject: "break", completed: false }
+]
+};
+
+// Pending chapters data
+const chaptersData = [
+{ subject: "Accountancy", chapter: "Ch 19 - 6 lectures + Qs", completed: false },
+{ subject: "Accountancy", chapter: "Ch 20 - 2 lectures + Qs", completed: false },
+{ subject: "Microeconomics", chapter: "Ch 9 - 4 lectures", completed: false },
+{ subject: "Microeconomics", chapter: "Ch 10 - 2 lectures", completed: false },
+{ subject: "Microeconomics", chapter: "Ch 11 - 4 lectures", completed: false },
+{ subject: "Statistics", chapter: "Ch 10 - 4 lectures", completed: false },
+{ subject: "Statistics", chapter: "Ch 11 - 3 lectures", completed: false },
+{ subject: "Business Studies", chapter: "3 Chapters Revision", completed: false },
+{ subject: "Computer Science", chapter: "9 Chapters Pending", completed: false }
+];
+
+let currentDay = 'mon';
+
+// Load saved data from localStorage
+function loadSavedData() {
+const savedTimetable = localStorage.getItem('studyPlannerTimetable');
+const savedChapters = localStorage.getItem('studyPlannerChapters');
+
+if (savedTimetable) {
+const parsed = JSON.parse(savedTimetable);
+Object.keys(parsed).forEach(day => {
+if (timetableData[day]) {
+timetableData[day] = parsed[day];
+}
+});
+}
+
+if (savedChapters) {
+const parsed = JSON.parse(savedChapters);
+parsed.forEach((chap, index) => {
+if (chaptersData[index]) {
+chaptersData[index].completed = chap.completed;
+}
+});
+}
+}
+
+// Save data to localStorage
+function saveData() {
+localStorage.setItem('studyPlannerTimetable', JSON.stringify(timetableData));
+localStorage.setItem('studyPlannerChapters', JSON.stringify(chaptersData));
+updateStats();
+}
+
+// Show selected day's timetable
+function showDay(day) {
+currentDay = day;
+
+// Update active button
+document.querySelectorAll('.day-btn').forEach(btn => {
+btn.classList.remove('active');
+});
+event.target.classList.add('active');
+
+// Render timetable
+const timetable = document.getElementById('timetable');
+timetable.innerHTML = '';
+
+timetableData[day].forEach((slot, index) => {
+const slotElement = document.createElement('div');
+slotElement.className = `time-slot ${slot.subject}`;
+slotElement.innerHTML = `
+<div class="time">${slot.time}</div>
+<div class="task">
+<span class="subject-tag tag-${slot.subject}">${slot.subject.toUpperCase()}</span>
+${slot.task}
+</div>
+<input type="checkbox" class="checkbox" ${slot.completed ? 'checked' : ''}
+onchange="toggleTask('${day}', ${index})">
+`;
+timetable.appendChild(slotElement);
+});
+
+updateCompletedCount();
+}
+
+// Toggle task completion
+function toggleTask(day, index) {
+timetableData[day][index].completed = !timetableData[day][index].completed;
+saveData();
+showDay(currentDay);
+}
+
+// Toggle chapter completion
+function toggleChapter(index) {
+chaptersData[index].completed = !chaptersData[index].completed;
+saveData();
+renderChapters();
+}
+
+// Render chapters list
+function renderChapters() {
+const chapterList = document.getElementById('chapterList');
+chapterList.innerHTML = '';
+
+chaptersData.forEach((chap, index) => {
+const chapterElement = document.createElement('div');
+chapterElement.className = `chapter-item ${chap.completed ? 'completed' : ''}`;
+chapterElement.innerHTML = `
+<div>
+<strong>${chap.subject}</strong><br>
+<span>${chap.chapter}</span>
+</div>
+<input type="checkbox" class="checkbox" ${chap.completed ? 'checked' : ''}
+onchange="toggleChapter(${index})">
+`;
+chapterList.appendChild(chapterElement);
+});
+}
+
+// Update completion count
+function updateCompletedCount() {
+let totalTasks = 0;
+let completedTasks = 0;
+
+Object.values(timetableData).forEach(day => {
+day.forEach(task => {
+totalTasks++;
+if (task.completed) completedTasks++;
+});
+});
+
+document.getElementById('completedTasks').textContent = completedTasks;
+}
+
+// Update stats
+function updateStats() {
+// Calculate progress for each subject
+let accountancyLectures = 0;
+let accountancyCompleted = 0;
+let microLectures = 0;
+let microCompleted = 0;
+let statsLectures = 0;
+let statsCompleted = 0;
+
+// Count from timetable
+Object.values(timetableData).forEach(day => {
+day.forEach(task => {
+if (task.task.includes('Accountancy') && task.task.includes('Ch 19')) {
+accountancyLectures += 6;
+if (task.completed) accountancyCompleted += 2;
+}
+if (task.task.includes('Accountancy') && task.task.includes('Ch 20')) {
+accountancyLectures += 2;
+if (task.completed) accountancyCompleted += 1;
+}
+if (task.task.includes('Microeconomics') && task.task.includes('Ch 9')) {
+microLectures += 4;
+if (task.completed) microCompleted += 1;
+}
+if (task.task.includes('Microeconomics') && task.task.includes('Ch 10')) {
+microLectures += 2;
+if (task.completed) microCompleted += 1;
+}
+if (task.task.includes('Microeconomics') && task.task.includes('Ch 11')) {
+microLectures += 4;
+if (task.completed) microCompleted += 1;
+}
+if (task.task.includes('Statistics') && task.task.includes('Ch 10')) {
+statsLectures += 4;
+if (task.completed) statsCompleted += 1;
+}
+if (task.task.includes('Statistics') && task.task.includes('Ch 11')) {
+statsLectures += 3;
+if (task.completed) statsCompleted += 1;
+}
+});
+});
+
+// Update DOM
+document.querySelector('.accountancy .value').textContent =
+`${accountancyCompleted}/${accountancyLectures} Lectures`;
+document.querySelector('.accountancy .progress-fill').style.width =
+`${(accountancyCompleted/accountancyLectures)*100}%`;
+
+document.querySelector('.micro .value').textContent =
+`${microCompleted}/${microLectures} Lectures`;
+document.querySelector('.micro .progress-fill').style.width =
+`${(microCompleted/microLectures)*100}%`;
+
+document.querySelector('.stats .value').textContent =
+`${statsCompleted}/${statsLectures} Lectures`;
+document.querySelector('.stats .progress-fill').style.width =
+`${(statsCompleted/statsLectures)*100}%`;
+
+// Update IPMAT hours (simplified)
+let ipmatHours = 0;
+Object.values(timetableData).forEach(day => {
+day.forEach(task => {
+if (task.subject === 'ipmat' && task.completed) {
+if (task.time.includes('4:00-5:00')) ipmatHours += 1;
+if (task.time.includes('10:00-12:00')) ipmatHours += 2;
+if (task.task.includes('Full Length Mock')) ipmatHours += 2;
+}
+});
+});
+document.querySelector('.ipmat .value').textContent = `${ipmatHours.toFixed(1)} hrs`;
+}
+
+// Print timetable
+function printTimetable() {
+window.print();
+}
+
+// Export progress
+function exportProgress() {
+const data = {
+timetable: timetableData,
+chapters: chaptersData,
+exportDate: new Date().toISOString()
+};
+
+const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = `study-planner-${new Date().toLocaleDateString()}.json`;
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+
+alert('Progress exported successfully!');
+}
+
+// Reset all
+function resetAll() {
+if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+// Reset timetable
+Object.keys(timetableData).forEach(day => {
+timetableData[day].forEach(task => {
+task.completed = false;
+});
+});
+
+// Reset chapters
+chaptersData.forEach(chap => {
+chap.completed = false;
+});
+
+saveData();
+showDay(currentDay);
+renderChapters();
+alert('All progress has been reset!');
+}
+}
+
+// Show next week plan
+function showNextWeek() {
+alert('Next week (16-22 Feb) planning:\n\n1. Include practicals from 15th Feb\n2. Project work time slots\n3. Revision before exams\n4. Mock tests intensification\n\nWill be implemented in next update!');
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+loadSavedData();
+showDay('mon');
+renderChapters();
+updateStats();
+});
+</script>
+</body>
+</html>
